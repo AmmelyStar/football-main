@@ -19,6 +19,9 @@ type FormErrors = {
   privacy?: string;
 };
 
+const fieldClassName =
+  "mt-1 block w-full rounded-md bg-black/25 px-3.5 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-white/20 transition placeholder:text-white/35 focus:bg-black/35 focus:outline-2 focus:-outline-offset-2 focus:outline-white/70";
+
 export default function ContactForm() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -34,19 +37,22 @@ export default function ContactForm() {
   const [isSending, setIsSending] = useState(false);
 
   function handleChange(
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
-    const { name, value, type } = e.target;
-    const checked =
-      e.target instanceof HTMLInputElement ? e.target.checked : false;
+    const { name, value, type } = event.target;
 
-    setFormData((prev) => ({
-      ...prev,
+    const checked =
+      event.target instanceof HTMLInputElement
+        ? event.target.checked
+        : false;
+
+    setFormData((previousData) => ({
+      ...previousData,
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    setErrors((prev) => ({
-      ...prev,
+    setErrors((previousErrors) => ({
+      ...previousErrors,
       [name]: "",
     }));
   }
@@ -67,19 +73,22 @@ export default function ContactForm() {
     }
 
     if (formData.message.trim().length < 10) {
-      newErrors.message = "Die Nachricht sollte mindestens 10 Zeichen haben.";
+      newErrors.message =
+        "Die Nachricht sollte mindestens 10 Zeichen haben.";
     }
 
     if (!formData.privacy) {
-      newErrors.privacy = "Bitte akzeptieren Sie die Datenschutzerklärung.";
+      newErrors.privacy =
+        "Bitte akzeptieren Sie die Datenschutzerklärung.";
     }
 
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
   }
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
     setSuccess(false);
 
@@ -112,18 +121,28 @@ export default function ContactForm() {
       });
     } catch (error) {
       console.error(error);
-      alert("Fehler beim Senden. Bitte versuchen Sie es später erneut.");
+
+      alert(
+        "Fehler beim Senden. Bitte versuchen Sie es später erneut.",
+      );
     } finally {
       setIsSending(false);
     }
   }
 
   return (
-    <section id="kontakt" className="relative isolate bg-black ">
-      <form onSubmit={handleSubmit} className="mx-auto mt-12 max-w-xl ">
+    <div className="relative isolate">
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto mt-12 max-w-xl lg:mt-0"
+      >
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+          {/* Name */}
           <div className="sm:col-span-2">
-            <label htmlFor="name" className="block text-sm text-white">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-white"
+            >
               Name *
             </label>
 
@@ -131,18 +150,25 @@ export default function ContactForm() {
               id="name"
               name="name"
               type="text"
+              autoComplete="name"
               value={formData.name}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#afd63f]"
+              className={fieldClassName}
             />
 
             {errors.name && (
-              <p className="mt-2 text-sm text-red-400">{errors.name}</p>
+              <p className="mt-2 text-sm text-red-300">
+                {errors.name}
+              </p>
             )}
           </div>
 
+          {/* Unternehmen */}
           <div className="sm:col-span-2">
-            <label htmlFor="company" className="block text-sm text-white">
+            <label
+              htmlFor="company"
+              className="block text-sm font-medium text-white"
+            >
               Unternehmen
             </label>
 
@@ -150,14 +176,19 @@ export default function ContactForm() {
               id="company"
               name="company"
               type="text"
+              autoComplete="organization"
               value={formData.company}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#afd63f]"
+              className={fieldClassName}
             />
           </div>
 
+          {/* E-Mail */}
           <div className="sm:col-span-2">
-            <label htmlFor="email" className="block text-sm text-white">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-white"
+            >
               E-Mail *
             </label>
 
@@ -165,18 +196,25 @@ export default function ContactForm() {
               id="email"
               name="email"
               type="email"
+              autoComplete="email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#afd63f]"
+              className={fieldClassName}
             />
 
             {errors.email && (
-              <p className="mt-2 text-sm text-red-400">{errors.email}</p>
+              <p className="mt-2 text-sm text-red-300">
+                {errors.email}
+              </p>
             )}
           </div>
 
+          {/* Telefon */}
           <div className="sm:col-span-2">
-            <label htmlFor="phone" className="block text-sm text-white">
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-white"
+            >
               Telefon
             </label>
 
@@ -184,19 +222,26 @@ export default function ContactForm() {
               id="phone"
               name="phone"
               type="tel"
+              autoComplete="tel"
               value={formData.phone}
               onChange={handleChange}
               placeholder="+43 664 391 93 74"
-              className="mt-1 block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#afd63f]"
+              className={fieldClassName}
             />
 
             {errors.phone && (
-              <p className="mt-2 text-sm text-red-400">{errors.phone}</p>
+              <p className="mt-2 text-sm text-red-300">
+                {errors.phone}
+              </p>
             )}
           </div>
 
+          {/* Nachricht */}
           <div className="sm:col-span-2">
-            <label htmlFor="message" className="block text-sm text-white">
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-white"
+            >
               Nachricht *
             </label>
 
@@ -206,14 +251,17 @@ export default function ContactForm() {
               rows={5}
               value={formData.message}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-[#afd63f]"
+              className={fieldClassName}
             />
 
             {errors.message && (
-              <p className="mt-2 text-sm text-red-400">{errors.message}</p>
+              <p className="mt-2 text-sm text-red-300">
+                {errors.message}
+              </p>
             )}
           </div>
 
+          {/* Datenschutz */}
           <div className="sm:col-span-2">
             <div className="flex gap-x-4">
               <input
@@ -222,14 +270,17 @@ export default function ContactForm() {
                 type="checkbox"
                 checked={formData.privacy}
                 onChange={handleChange}
-                className="mt-1 size-4 accent-[#afd63f]"
+                className="mt-1 size-4 shrink-0 accent-black"
               />
 
-              <label htmlFor="privacy" className="text-sm/6 text-white/80">
+              <label
+                htmlFor="privacy"
+                className="text-sm/6 text-white/75"
+              >
                 Ich willige in die Verarbeitung meiner Daten gemäß der{" "}
                 <a
                   href="/datenschutz"
-                  className="font-semibold text-[#afd63f] hover:text-[#273810]"
+                  className="font-semibold text-white underline decoration-white/40 underline-offset-4 transition hover:text-white/70"
                 >
                   Datenschutzerklärung
                 </a>{" "}
@@ -238,27 +289,30 @@ export default function ContactForm() {
             </div>
 
             {errors.privacy && (
-              <p className="mt-2 text-sm text-red-400">{errors.privacy}</p>
+              <p className="mt-2 text-sm text-red-300">
+                {errors.privacy}
+              </p>
             )}
           </div>
         </div>
 
+        {/* Кнопка */}
         <div className="mt-10">
           <button
             type="submit"
             disabled={isSending}
-            className="rounded-md bg-[#afd63f] px-7 py-3.5 text-sm font-semibold text-black shadow-lg transition-colors duration-300 ease-out hover:bg-[#273810] hover:text-white w-full"
+            className="w-full rounded-md bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-colors duration-300 ease-out hover:bg-white hover:text-[#165201] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSending ? "Wird gesendet..." : "Absenden"}
           </button>
         </div>
 
         {success && (
-          <p className="mt-6 text-center text-sm/6 text-[#afd63f]">
+          <p className="mt-6 text-center text-sm/6 font-medium text-white">
             Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.
           </p>
         )}
       </form>
-    </section>
+    </div>
   );
 }

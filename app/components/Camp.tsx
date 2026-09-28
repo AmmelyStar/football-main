@@ -1,12 +1,12 @@
 import {
   CalendarDaysIcon,
   MapPinIcon,
+  SparklesIcon,
   TrophyIcon,
   UserGroupIcon,
-  SparklesIcon,
 } from "@heroicons/react/24/outline";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
 const campDetails = [
   {
@@ -38,23 +38,25 @@ const campDetails = [
 
 export default function Camp() {
   return (
-    <div id="camp" className="bg-black">
-      <div className="mx-auto px-4 pt-8 md:pt-24 sm:px-6  max-w-7xl lg:px-8">
-        <div className="grid grid-cols-1 items-center gap-x-8 gap-y-16 lg:grid-cols-2 border-b border-[#afd63f] pb-16">
+    <section id="camp" className="bg-[#165201]">
+      <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 md:pt-24 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-x-8 gap-y-16 border-b border-black/60 pb-16 lg:grid-cols-2">
+          {/* Информация */}
           <div>
-            <div className="border-b border-[#afd63f] pb-10">
+            <div className="border-b border-black/60 pb-10">
               <p
-                className="text-4xl font-medium text-[#afd63f]"
+                className="text-4xl font-medium text-white/70"
                 style={{ fontFamily: "'Indie Flower', cursive" }}
               >
                 Vor den Sommerferien
               </p>
-              <h2 className="mt-6 md:max-w-md text-balance font-display text-3xl/12 md:text-5xl/20 font-semibold tracking-wider text-white uppercase">
-                {" "}
-                Tormann- trainingscamp
+
+              <h2 className="mt-6 text-balance font-display text-3xl/12 font-semibold uppercase tracking-wider text-white md:max-w-md md:text-5xl/20">
+                Tormann-Trainingscamp
               </h2>
+
               <p className="mt-6 text-balance text-base/8 font-light text-white">
-                <span className="font-semibold text-black bg-[#afd63f] mx-1 px-1">
+                <span className="mx-1 bg-black px-1 font-semibold text-white">
                   2 Tage voller Training, Spaß und Entwicklung.
                 </span>{" "}
                 Das Camp richtet sich an motivierte Kinder und Jugendliche, die
@@ -65,18 +67,20 @@ export default function Camp() {
             <dl className="mt-10 space-y-10">
               {campDetails.map((detail) => (
                 <div key={detail.title} className="relative">
-                  <div className="flex flex-row gap-4 items-center">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-black ring-1 ring-[#afd63f]">
+                  <div className="flex items-center gap-4">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-black ring-1 ring-white/20">
                       <detail.icon
                         aria-hidden="true"
-                        className="size-6 text-[#afd63f]"
+                        className="size-6 text-white"
                       />
                     </div>
+
                     <div>
                       <dt className="text-base font-bold text-white">
                         {detail.title}
                       </dt>
-                      <dd className="mt-2 text-base text-white/80">
+
+                      <dd className="mt-1 text-base text-white/75">
                         {detail.text}
                       </dd>
                     </div>
@@ -86,72 +90,79 @@ export default function Camp() {
             </dl>
           </div>
 
+          {/* Изображение и цены */}
           <div>
             <Image
-              alt=""
+              alt="Tormann-Trainingscamp"
               src="/с.png"
               width={500}
               height={500}
-              className="aspect-square w-full rounded-lg bg-gray-100 object-cover"
+              className="aspect-square w-full rounded-lg object-cover"
             />
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:mt-6 sm:gap-6 lg:mt-8 lg:gap-8">
-              <div className="rounded-lg bg-[#afd63f] p-4 text-center">
-                <div className=" flex text-center items-center ">
-                  <span className="mt-6  font-display text-6xl/24 font-semibold tracking-wider text-white uppercase text-center mx-auto">
+
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-6 sm:grid-cols-2 sm:gap-6 lg:mt-8 lg:gap-8">
+              <div className="rounded-lg bg-black p-5 text-center ring-1 ring-white/10">
+                <div className="flex items-center text-center">
+                  <span className="mx-auto mt-4 font-display text-6xl/24 font-semibold uppercase tracking-wider text-white">
                     € 99
                   </span>
                 </div>
-                <p className="text-2xl font-bold text-black mt-6 wrap-break-word">
+
+                <p className="mt-5 text-2xl font-bold text-white">
                   Frühbucherpreis
                 </p>
-                <p className=" text-base text-black">
+
+                <p className="mt-1 text-base text-white/70">
                   Gültig bei Anmeldung bis 15. Mai 2026.
                 </p>
               </div>
 
-              <div className="rounded-lg bg-[#afd63f] p-4 text-center">
-                <div className=" flex  text-center items-center ">
-                  <span className="mt-6  font-display text-6xl/24 font-semibold tracking-wider text-white uppercase text-center mx-auto">
+              <div className="rounded-lg bg-black p-5 text-center ring-1 ring-white/10">
+                <div className="flex items-center text-center">
+                  <span className="mx-auto mt-4 font-display text-6xl/24 font-semibold uppercase tracking-wider text-white">
                     € 119
                   </span>
                 </div>
-                <p className="text-2xl font-bold text-black mt-6 wrap-break-word">
+
+                <p className="mt-5 text-2xl font-bold text-white">
                   Normalpreis
                 </p>
-                <p className=" text-base text-black">Gültig ab 16. Mai 2026.</p>
+
+                <p className="mt-1 text-base text-white/70">
+                  Gültig ab 16. Mai 2026.
+                </p>
               </div>
             </div>
 
-            <>
-              <div className="mt-6 flex justify-center">
-                <Link
-                  href="/camp-anmeldung"
-                  className="rounded-md bg-[#afd63f] w-full py-3.5 text-base font-semibold text-black shadow-lg hover:bg-[#273810] transition-colors duration-300 ease-out hover:text-white text-center"
-                >
-                  Jetzt anmelden
-                </Link>
-              </div>
-              <p className="mt-6 text-center text-base/8 text-white/80 text-balance">
-                Fragen? Schreiben Sie uns an{" "}
-                <a
-                  href="mailto:tormannschuleweinviertel@hotmail.com"
-                  className="font-semibold text-[#afd63f] hover:text-white"
-                >
-                  tormannschuleweinviertel@hotmail.com
-                </a>{" "}
-                oder rufen Sie an unter{" "}
-                <a
-                  href="tel:+436643919374"
-                  className="font-semibold text-[#afd63f] hover:text-white"
-                >
-                  +43 664 391 93 74
-                </a>
-                .
-              </p>
-            </>
+            <div className="mt-6 flex justify-center">
+              <Link
+                href="/camp-anmeldung"
+                className="w-full rounded-md bg-black py-3.5 text-center text-base font-semibold text-white shadow-lg transition-colors duration-300 ease-out hover:bg-white hover:text-[#165201]"
+              >
+                Jetzt anmelden
+              </Link>
+            </div>
+
+            <p className="mt-6 text-balance text-center text-base/8 text-white/75">
+              Fragen? Schreiben Sie uns an{" "}
+              <a
+                href="mailto:tormannschuleweinviertel@hotmail.com"
+                className="font-semibold text-white underline decoration-white/40 underline-offset-4 transition-colors hover:text-white/70"
+              >
+                tormannschuleweinviertel@hotmail.com
+              </a>{" "}
+              oder rufen Sie an unter{" "}
+              <a
+                href="tel:+436643919374"
+                className="font-semibold text-white underline decoration-white/40 underline-offset-4 transition-colors hover:text-white/70"
+              >
+                +43 664 391 93 74
+              </a>
+              .
+            </p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

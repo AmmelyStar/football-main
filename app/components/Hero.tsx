@@ -45,13 +45,14 @@ export default function Hero() {
     `;
 
     hands.style.opacity = "0";
-    hands.style.transform = `translateY(220px) scale(0.7)`;
+    hands.style.transform = "translateY(220px) scale(0.7)";
     hands.style.transformOrigin = "bottom center";
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         ball.style.transition =
           "transform 0.95s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.25s ease";
+
         ball.style.opacity = "1";
         ball.style.transform = `
           translateX(-50%)
@@ -62,6 +63,7 @@ export default function Hero() {
 
         hands.style.transition =
           "transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.35s ease";
+
         hands.style.opacity = "1";
         hands.style.transform = `
           translateY(${handsFinalY}px)
@@ -70,28 +72,28 @@ export default function Hero() {
       });
     });
 
-    const t1 = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       caught.current = true;
     }, 1200);
 
     return () => {
-      window.clearTimeout(t1);
+      window.clearTimeout(timer);
     };
   }, []);
 
   useEffect(() => {
-    const prefersReduced = window.matchMedia(
+    const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    if (prefersReduced) return;
+    if (prefersReducedMotion) return;
 
     let rafId: number | null = null;
 
     const handleScroll = () => {
       if (!caught.current) return;
 
-      if (rafId) {
+      if (rafId !== null) {
         cancelAnimationFrame(rafId);
       }
 
@@ -119,7 +121,7 @@ export default function Hero() {
 
           ballRef.current.style.transform = `
             translateX(-50%)
-            translateY(${ballFinalY + scrollY * -0.05}px)
+            translateY(${ballFinalY - scrollY * 0.05}px)
             scale(${ballScale})
             rotate(${ballRotation.current}deg)
           `;
@@ -127,159 +129,198 @@ export default function Hero() {
       });
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
 
-      if (rafId) {
+      if (rafId !== null) {
         cancelAnimationFrame(rafId);
       }
     };
   }, []);
 
   return (
-    <section id="home"
-      ref={sectionRef}
-      className="hero-section relative w-full max-w-7xl mx-auto h-screen min-h-150 max-h-225"
-      style={{ clipPath: "inset(0)" }}
-    >
-      {/* Layer 1 — фон */}
-      <div
-        ref={bgRef}
-        className="absolute will-change-transform"
-        style={{ inset: "-15% 0" }}
+    <div className="w-full bg-[#165201]">
+      <section
+        id="home"
+        ref={sectionRef}
+        className="hero-section relative mx-auto h-screen min-h-150 max-h-225 w-full max-w-7xl overflow-hidden"
+        style={{ clipPath: "inset(0)" }}
       >
-        <Image
-          src="/hero/bg2.jpg"
-          alt=""
-          fill
-          priority
-          className="object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-black/60" />
-      </div>
-
-      {/* Layer 2 — мяч */}
-      <div
-        ref={ballRef}
-        className="absolute will-change-transform top-50"
-        style={{
-          bottom: "5%",
-          left: "50%",
-          width: "var(--hero-ball-size)",
-          aspectRatio: "1",
-          opacity: 0,
-        }}
-      >
-        <Image
-          src="/hero/ball.png"
-          alt="Football"
-          fill
-          priority
-          className="object-contain"
-          style={{ filter: "drop-shadow(0 12px 32px rgba(0,0,0,0.6))" }}
-        />
-      </div>
-
-      {/* Layer 3 — руки */}
-      <div
-        ref={handsRef}
-        className="absolute inset-0 will-change-transform mx-2"
-        style={{
-          opacity: 0,
-          transformOrigin: "bottom center",
-        }}
-      >
-        <Image
-          src="/hero/hands.png"
-          alt=""
-          fill
-          priority
-          className="object-cover object-bottom"
-        />
-      </div>
-
-      {/* Layer 4 — градиенты по краям */}
-      <div
-        className="absolute inset-0 pointer-events-none z-5"
-        style={{
-          background: `
-            linear-gradient(to right, black 0%, transparent 25%),
-            linear-gradient(to left, black 0%, transparent 25%)
-          `,
-        }}
-      />
-
-      {/* Layer 5 — текст */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center pointer-events-none">
-        <svg
-          viewBox="0 0 800 300"
-          className="w-full max-w-3xl -mt-10"
-          style={{ overflow: "visible" }}
+        {/* Фоновая фотография */}
+        <div
+          ref={bgRef}
+          className="absolute z-0 will-change-transform"
+          style={{ inset: "-15% 0" }}
         >
-          <defs>
-            <path id="arc" d="M 50,250 Q 400,0 750,250" />
-          </defs>
+          <Image
+            src="/hero/bg2.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
 
-          <text
-            fill="white"
-            fontWeight="bold"
-            fontSize="40"
-            letterSpacing="-1"
-            style={{ filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.5))" }}
-          >
-            <textPath href="#arc" startOffset="50%" textAnchor="middle">
-              In Form für&apos;s Leben
-            </textPath>
-          </text>
-        </svg>
-
-        <div className="mt-16 pointer-events-auto">
-          <a
-            href="#kontakt"
-            className="rounded-md bg-[#afd63f] px-7 py-3.5 text-sm font-semibold text-black shadow-lg hover:bg-[#273810] transition-colors duration-300 ease-out hover:text-white"
-          >
-            Jetzt mitmachen
-          </a>
+          <div className="absolute inset-0 bg-black/40" />
         </div>
 
-        <p className="mt-20 sm:mt-40 text-white/90 text-base max-w-xl leading-relaxed drop-shadow">
-          Jeder einzelne muss persönliche Hürden überwinden. Wie schnell wir ins
-          Ziel kommen, spielt dabei keine große Rolle. Wichtig ist nur, jeden
-          Tag alles zu geben. Stellst du dich der Herausforderung?
-        </p>
-      </div>
+        {/* Мяч */}
+        <div
+          ref={ballRef}
+          className="absolute top-50 z-[2] will-change-transform"
+          style={{
+            bottom: "5%",
+            left: "50%",
+            width: "var(--hero-ball-size)",
+            aspectRatio: "1",
+            opacity: 0,
+          }}
+        >
+          <Image
+            src="/hero/ball.png"
+            alt="Football"
+            fill
+            priority
+            sizes="(max-width: 480px) 72vw, 530px"
+            className="object-contain"
+            style={{
+              filter: "drop-shadow(0 12px 32px rgba(0, 0, 0, 0.6))",
+            }}
+          />
+        </div>
 
-      <style jsx>{`
-        .hero-section {
-          --hero-ball-size: clamp(260px, 55vw, 530px);
-          --hero-ball-y: -70;
-          --hero-ball-scale: 0.8;
-          --hero-hands-y: 90;
-          --hero-hands-scale: 1;
-        }
+        {/* Руки */}
+        <div
+          ref={handsRef}
+          className="absolute inset-0 z-[3] mx-2 will-change-transform"
+          style={{
+            opacity: 0,
+            transformOrigin: "bottom center",
+          }}
+        >
+          <Image
+            src="/hero/hands.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-bottom"
+          />
+        </div>
 
-        @media (max-width: 480px) {
+        {/* Зелёная растушёвка по краям */}
+        <div
+          className="pointer-events-none absolute inset-0 z-[4]"
+          style={{
+            background: `
+              linear-gradient(
+                to right,
+                #165201 0%,
+                rgba(22, 82, 1, 0) 25%
+              ),
+              linear-gradient(
+                to left,
+                #165201 0%,
+                rgba(22, 82, 1, 0) 25%
+              )
+            `,
+          }}
+        />
+        {/* Нижняя растушёвка между Hero и About */}
+<div
+  className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-40 sm:h-56"
+  style={{
+    background: `
+      linear-gradient(
+        to bottom,
+        rgba(22, 82, 1, 0) 0%,
+        rgba(22, 82, 1, 0.75) 65%,
+        #165201 100%
+      )
+    `,
+  }}
+/>
+
+        {/* Текст */}
+        <div className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
+          <svg
+            viewBox="0 0 800 300"
+            className="-mt-10 w-full max-w-3xl"
+            style={{ overflow: "visible" }}
+          >
+            <defs>
+              <path id="arc" d="M 50,250 Q 400,0 750,250" />
+            </defs>
+
+            <text
+              fill="white"
+              fontWeight="bold"
+              fontSize="40"
+              letterSpacing="-1"
+              style={{
+                filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))",
+              }}
+            >
+              <textPath
+                href="#arc"
+                startOffset="50%"
+                textAnchor="middle"
+              >
+                In Form für&apos;s Leben
+              </textPath>
+            </text>
+          </svg>
+
+          <div className="pointer-events-auto mt-16">
+            <a
+              href="#kontakt"
+              className="rounded-md bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-colors duration-300 hover:bg-white hover:text-[#165201]"
+            >
+              Jetzt mitmachen
+            </a>
+          </div>
+
+          <p className="mt-20 max-w-xl text-base leading-relaxed text-white/90 drop-shadow sm:mt-40">
+            Jeder einzelne muss persönliche Hürden überwinden. Wie schnell wir
+            ins Ziel kommen, spielt dabei keine große Rolle. Wichtig ist nur,
+            jeden Tag alles zu geben. Stellst du dich der Herausforderung?
+          </p>
+        </div>
+
+        <style jsx>{`
           .hero-section {
-            --hero-ball-size: clamp(220px, 72vw, 320px);
-            --hero-ball-y: -35;
-            --hero-ball-scale: 0.75;
-            --hero-hands-y: 125;
-            --hero-hands-scale: 0.85;
+            --hero-ball-size: clamp(260px, 55vw, 530px);
+            --hero-ball-y: -70;
+            --hero-ball-scale: 0.8;
+            --hero-hands-y: 90;
+            --hero-hands-scale: 1;
           }
-        }
 
-        @media (max-width: 380px) {
-          .hero-section {
-            --hero-ball-size: clamp(190px, 70vw, 280px);
-            --hero-ball-y: -20;
-            --hero-ball-scale: 0.72;
-            --hero-hands-y: 145;
-            --hero-hands-scale: 0.78;
+          @media (max-width: 480px) {
+            .hero-section {
+              --hero-ball-size: clamp(220px, 72vw, 320px);
+              --hero-ball-y: -35;
+              --hero-ball-scale: 0.75;
+              --hero-hands-y: 125;
+              --hero-hands-scale: 0.85;
+            }
           }
-        }
-      `}</style>
-    </section>
+
+          @media (max-width: 380px) {
+            .hero-section {
+              --hero-ball-size: clamp(190px, 70vw, 280px);
+              --hero-ball-y: -20;
+              --hero-ball-scale: 0.72;
+              --hero-hands-y: 145;
+              --hero-hands-scale: 0.78;
+            }
+          }
+        `}</style>
+      </section>
+    </div>
   );
 }

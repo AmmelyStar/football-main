@@ -1,6 +1,6 @@
+import { ClockIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-import { ClockIcon } from "@heroicons/react/24/outline";
 
 const yogaClasses = [
   {
@@ -44,49 +44,51 @@ const yogaInfo = [
 
 export default function Yoga() {
   return (
-    <section id="yoga" className="bg-black">
+    <section id="yoga" className="bg-[#165201]">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <p
-          className="text-center text-4xl font-medium text-[#afd63f]"
+          className="text-center text-4xl font-medium text-white/70"
           style={{ fontFamily: "'Indie Flower', cursive" }}
         >
           Yoga & Bewegung
         </p>
 
-        <h2 className="mx-auto mt-6 max-w-2xl text-center text-balance font-display text-3xl/12 md:text-5xl/20 font-semibold tracking-wider text-white">
+        <h2 className="mx-auto mt-6 max-w-2xl text-balance text-center font-display text-3xl/12 font-semibold tracking-wider text-white md:text-5xl/20">
           Bewegungsschule Weinviertel
         </h2>
 
-        <p className="mx-auto mt-3 max-w-2xl text-center text-balance text-base/8 font-light text-white">
+        <p className="mx-auto mt-3 max-w-2xl text-balance text-center text-base/8 font-light text-white/85">
           Yoga für mehr Beweglichkeit & Stärke – ideal zur Verbesserung von
           Mobilität, Stabilität, Regeneration und Körpergefühl.
         </p>
 
         <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+          {/* Левая колонка */}
           <div className="flex flex-col gap-6">
             <div className="grid grid-cols-1 gap-6 lg:grid-rows-2 lg:gap-8">
               {yogaClasses.map((item) => (
                 <div
                   key={item.title}
-                  className="group relative min-h-85 overflow-hidden rounded-lg border border-white/10 bg-zinc-950 p-6 transition hover:border-[#afd63f]/50 hover:bg-zinc-900 lg:min-h-0"
+                  className="group relative min-h-85 overflow-hidden rounded-lg border border-white/10 bg-black p-6 transition duration-300 hover:border-white/30 lg:min-h-0"
                 >
                   <div className="relative z-10 flex h-full flex-col justify-between">
                     <div className="flex w-full flex-row justify-between gap-6">
                       <p
-                        className="text-2xl font-medium text-[#afd63f]"
+                        className="text-2xl font-medium text-white/75"
                         style={{ fontFamily: "'Indie Flower', cursive" }}
                       >
                         {item.day}
                       </p>
 
-                      <div className="w-50 space-y-2 text-right text-sm text-white/75">
+                      <div className="w-50 space-y-2 text-right text-sm text-white/70">
                         <p>{item.location}</p>
 
                         <p className="flex items-center justify-end gap-2">
                           <ClockIcon
                             aria-hidden="true"
-                            className="size-5 shrink-0 text-[#afd63f]"
+                            className="size-5 shrink-0 text-white/70"
                           />
+
                           <span>{item.time}</span>
                         </p>
                       </div>
@@ -104,11 +106,12 @@ export default function Yoga() {
                       </ul>
                     </div>
 
-                    <div className="mt-5 flex gap-3 text-sm font-medium">
-                      <span className="w-full bg-[#afd63f] px-4 py-2 text-black">
+                    <div className="mt-5 flex flex-col gap-3 text-sm font-medium sm:flex-row">
+                      <span className="w-full bg-white px-4 py-2 text-center text-black">
                         {item.price}
                       </span>
-                      <span className="w-50 border border-white/15 px-4 py-2 text-white">
+
+                      <span className="w-full border border-white/25 px-4 py-2 text-center text-white sm:w-50">
                         {item.blockPrice}
                       </span>
                     </div>
@@ -117,11 +120,12 @@ export default function Yoga() {
               ))}
             </div>
 
+            {/* Дополнительная информация */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {yogaInfo.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-lg border border-white/10 bg-zinc-950 p-6 transition hover:border-[#afd63f]/50 hover:bg-zinc-900"
+                  className="rounded-lg border border-white/10 bg-black p-6 transition duration-300 hover:border-white/30"
                 >
                   <h4 className="font-display text-xl/7 font-semibold uppercase tracking-wider text-white">
                     {item.title}
@@ -135,32 +139,33 @@ export default function Yoga() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 overflow-hidden rounded-lg">
+          {/* Правая колонка */}
+          <div className="grid grid-cols-1 overflow-hidden rounded-lg ring-1 ring-white/10">
             <div className="group relative min-h-130 overflow-hidden lg:min-h-135">
               <Image
+                src="/girl2.png"
+                alt="Yoga und Bewegung"
                 width={900}
                 height={1100}
-                alt="Yoga und Bewegung"
-                src="/girl2.png"
-                className="absolute inset-0 h-full w-full object-cover object-center transition duration-300 group-hover:scale-[1.02]"
+                className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
               />
             </div>
 
-            <div className="bg-[#afd63f] p-8 text-black">
+            <div className="bg-black p-8 text-white">
               <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
                 <div>
                   <h3
-                    className="text-2xl font-medium text-black"
+                    className="text-2xl font-medium text-white/70"
                     style={{ fontFamily: "'Indie Flower', cursive" }}
                   >
                     Mehr Informationen
                   </h3>
 
-                  <p className="mt-4 font-display text-4xl/12 font-semibold uppercase tracking-wider text-black">
+                  <p className="mt-4 font-display text-4xl/12 font-semibold uppercase tracking-wider text-white">
                     Iris Schneider
                   </p>
 
-                  <p className="mt-3 max-w-md text-base/7 font-light text-black/80">
+                  <p className="mt-3 max-w-md text-base/7 font-light text-white/70">
                     Weitere Details zu den Yoga- und Bewegungseinheiten finden
                     Sie direkt auf der Website.
                   </p>
@@ -170,7 +175,7 @@ export default function Yoga() {
                   href="https://www.iris-schneider.at/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 border border-black bg-black px-6 py-5 text-lg font-semibold text-[#afd63f] transition hover:bg-transparent hover:text-black"
+                  className="inline-flex w-full items-center justify-center gap-2 border border-white bg-white px-6 py-5 text-lg font-semibold text-[#165201] transition duration-300 hover:bg-transparent hover:text-white"
                 >
                   Website öffnen
                 </Link>
