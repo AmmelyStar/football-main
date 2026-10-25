@@ -26,6 +26,7 @@ const trainerLogos = [
   { src: "/aboutWork/logo11.png", alt: "Club 11" },
   { src: "/aboutWork/logo12.png", alt: "Club 12" },
   { src: "/aboutWork/logo13.png", alt: "Club 13" },
+   { src: "/aboutWork/logo14.png", alt: "SC Poysdorf" },
 ];
 
 type Logo = {
