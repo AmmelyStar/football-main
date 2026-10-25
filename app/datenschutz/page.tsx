@@ -1,36 +1,47 @@
 import Link from "next/link";
 
+const linkClassName =
+  "font-bold text-[#afd63f] underline underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white";
+
+const sectionClassName =
+  "min-w-0 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:rounded-3xl sm:p-8";
+
+const headingClassName =
+  "mb-4 text-xl font-black leading-snug text-white sm:text-2xl";
+
+const email = "tormannschuleweinviertel@hotmail.com";
+
 export default function DatenschutzPage() {
   return (
-    <main className="min-h-screen bg-background px-5 py-24 text-foreground sm:px-8">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen w-full min-w-0 bg-background px-4 py-16 text-foreground sm:px-8 sm:py-24">
+      <div className="mx-auto w-full min-w-0 max-w-6xl">
         <Link
           href="/"
-          className="mb-14 inline-flex items-center rounded-full border border-[#afd63f]/40 px-6 py-3 text-sm font-bold uppercase tracking-wide text-[#afd63f] transition hover:bg-[#afd63f] hover:text-black"
+          className="mb-10 inline-flex items-center rounded-full border border-[#afd63f]/40 px-5 py-3 text-sm font-bold uppercase tracking-wide text-[#afd63f] transition hover:bg-[#afd63f] hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:mb-14 sm:px-6"
         >
           ← Zur Startseite
         </Link>
 
-        <div className="mb-16">
-          <p className="font-draw text-3xl text-[#afd63f] sm:text-4xl">
+        <header className="mb-10 min-w-0 sm:mb-16">
+          <p className="font-draw text-2xl leading-snug text-[#afd63f] sm:text-4xl">
             Tormann & Bewegungsschule Weinviertel
           </p>
 
-          <h1 className="mt-2 font-display text-5xl font-black uppercase leading-none text-white sm:text-7xl lg:text-8xl">
+          <h1 className="mt-4 font-display text-[clamp(1.5rem,6vw,3rem)] font-black uppercase leading-tight tracking-tight text-white [overflow-wrap:anywhere] sm:text-6xl lg:text-7xl">
             Datenschutz
           </h1>
-        </div>
+        </header>
 
-        <div className="grid gap-8 lg:grid-cols-[0.35fr_0.65fr]">
-          <aside>
-            <h2 className="font-display text-4xl uppercase leading-none text-[#afd63f]">
+        <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-8">
+          <aside className="min-w-0">
+            <h2 className="font-display text-2xl uppercase leading-tight text-[#afd63f] sm:text-4xl">
               Deine Daten
             </h2>
           </aside>
 
-          <div className="space-y-6 text-base leading-8 text-white/80">
-            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-              <h2 className="mb-4 text-2xl font-black text-white">
+          <div className="min-w-0 space-y-6 text-sm leading-7 text-white/90 [overflow-wrap:anywhere] sm:text-base sm:leading-8">
+            <section className={sectionClassName}>
+              <h2 className={headingClassName}>
                 1. Verantwortlicher
               </h2>
 
@@ -41,19 +52,20 @@ export default function DatenschutzPage() {
 
               <p className="mt-4">
                 Tormann & Bewegungsschule Weinviertel
-                <br />
-                E-Mail:{" "}
-                <a
-                  href="mailto:tormannschuleweinviertel@hotmail.com"
-                  className="font-bold text-[#afd63f] hover:text-white"
-                >
-                  tormannschuleweinviertel@hotmail.com
-                </a>
               </p>
+
+              <p className="mt-3">E-Mail:</p>
+
+              <a
+                href={`mailto:${email}`}
+                className={`${linkClassName} mt-1 inline-block whitespace-nowrap text-[10px] min-[375px]:text-xs sm:text-sm`}
+              >
+                {email}
+              </a>
             </section>
 
-            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-              <h2 className="mb-4 text-2xl font-black text-white">
+            <section className={sectionClassName}>
+              <h2 className={headingClassName}>
                 2. Erhebung und Verarbeitung personenbezogener Daten
               </h2>
 
@@ -64,8 +76,8 @@ export default function DatenschutzPage() {
               </p>
             </section>
 
-            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-              <h2 className="mb-4 text-2xl font-black text-white">
+            <section className={sectionClassName}>
+              <h2 className={headingClassName}>
                 3. Kontaktformular
               </h2>
 
@@ -82,7 +94,7 @@ export default function DatenschutzPage() {
                   href="https://dsgvo-gesetz.de/art-6-dsgvo/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-[#afd63f] hover:text-white"
+                  className={linkClassName}
                 >
                   Art. 6 Abs. 1 lit. b DSGVO
                 </a>{" "}
@@ -92,7 +104,7 @@ export default function DatenschutzPage() {
                   href="https://dsgvo-gesetz.de/art-6-dsgvo/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-[#afd63f] hover:text-white"
+                  className={linkClassName}
                 >
                   Art. 6 Abs. 1 lit. f DSGVO
                 </a>
@@ -106,8 +118,8 @@ export default function DatenschutzPage() {
               </p>
             </section>
 
-            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-              <h2 className="mb-4 text-2xl font-black text-white">
+            <section className={sectionClassName}>
+              <h2 className={headingClassName}>
                 4. Hosting und Server-Logfiles
               </h2>
 
@@ -116,7 +128,7 @@ export default function DatenschutzPage() {
                 Informationen durch den Hosting-Anbieter verarbeitet.
               </p>
 
-              <ul className="mt-4 list-disc space-y-2 pl-6 marker:text-[#afd63f]">
+              <ul className="mt-4 list-disc space-y-2 pl-5 marker:text-[#afd63f] sm:pl-6">
                 <li>IP-Adresse</li>
                 <li>Datum und Uhrzeit des Zugriffs</li>
                 <li>Browsertyp und Browserversion</li>
@@ -131,7 +143,7 @@ export default function DatenschutzPage() {
                   href="https://dsgvo-gesetz.de/art-6-dsgvo/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-[#afd63f] hover:text-white"
+                  className={linkClassName}
                 >
                   Art. 6 Abs. 1 lit. f DSGVO
                 </a>
@@ -139,8 +151,8 @@ export default function DatenschutzPage() {
               </p>
             </section>
 
-            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-              <h2 className="mb-4 text-2xl font-black text-white">
+            <section className={sectionClassName}>
+              <h2 className={headingClassName}>
                 5. Ihre Rechte
               </h2>
 
@@ -158,7 +170,7 @@ export default function DatenschutzPage() {
                   href="https://www.dsb.gv.at/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-[#afd63f] hover:text-white"
+                  className={linkClassName}
                 >
                   österreichischen Datenschutzbehörde
                 </a>{" "}
@@ -166,21 +178,21 @@ export default function DatenschutzPage() {
               </p>
             </section>
 
-            <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-              <h2 className="mb-4 text-2xl font-black text-white">
+            <section className={sectionClassName}>
+              <h2 className={headingClassName}>
                 6. Kontakt
               </h2>
 
-              <p>Bei Fragen zum Datenschutz wenden Sie sich bitte an:</p>
-
-              <p className="mt-4">
-                <a
-                  href="mailto:tormannschuleweinviertel@hotmail.com"
-                  className="font-bold text-[#afd63f] hover:text-white"
-                >
-                  tormannschuleweinviertel@hotmail.com
-                </a>
+              <p>
+                Bei Fragen zum Datenschutz wenden Sie sich bitte an:
               </p>
+
+              <a
+                href={`mailto:${email}`}
+                className={`${linkClassName} mt-4 inline-block whitespace-nowrap text-[10px] min-[375px]:text-xs sm:text-sm`}
+              >
+                {email}
+              </a>
             </section>
           </div>
         </div>

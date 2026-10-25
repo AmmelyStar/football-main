@@ -1,8 +1,9 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 
-type FormData = {
+type ContactData = {
   name: string;
   company: string;
   email: string;
@@ -11,119 +12,173 @@ type FormData = {
   privacy: boolean;
 };
 
-type FormErrors = {
-  name?: string;
-  email?: string;
-  phone?: string;
-  message?: string;
-  privacy?: string;
+type FormErrors = Partial<Record<keyof ContactData, string>>;
+
+const initialData: ContactData = {
+  name: "",
+  company: "",
+  email: "",
+  phone: "",
+  message: "",
+  privacy: false,
 };
 
 const fieldClassName =
-  "mt-1 block w-full rounded-md bg-black/25 px-3.5 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-white/20 transition placeholder:text-white/35 focus:bg-black/35 focus:outline-2 focus:-outline-offset-2 focus:outline-white/70";
+  "mt-1 block box-border w-full min-w-0 max-w-full rounded-md border border-white/30 bg-black/25 px-3.5 py-2.5 text-base text-white placeholder:text-white/75 focus:border-white focus:outline-2 focus:outline-offset-2 focus:outline-white";
+
+const fields = [
+  {
+    name: "name",
+    label: "Name *",
+    type: "text",
+    autoComplete: "name",
+    required: true,
+    maxLength: 200,
+  },
+  {
+    name: "company",
+    label: "Unternehmen",
+    type: "text",
+    autoComplete: "organization",
+    required: false,
+    maxLength: 200,
+  },
+  {
+    name: "email",
+    label: "E-Mail *",
+    type: "email",
+    autoComplete: "email",
+    required: true,
+    maxLength: 254,
+  },
+  {
+    name: "phone",
+    label: "Telefon",
+    type: "tel",
+    autoComplete: "tel",
+    required: false,
+    maxLength: 100,
+  },
+] as const;
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    company: "",
-    email: "",
-    phone: "",
-    message: "",
-    privacy: false,
-  });
-
+  const [formData, setFormData] = useState<ContactData>(initialData);
   const [errors, setErrors] = useState<FormErrors>({});
   const [success, setSuccess] = useState(false);
+  const [sendError, setSendError] = useState("");
   const [isSending, setIsSending] = useState(false);
 
   function handleChange(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
-    const { name, value, type } = event.target;
+    const target = event.target;
+    const name = target.name as keyof ContactData;
+    const value =
+      target instanceof HTMLInputElement && target.type === "checkbox"
+        ? target.checked
+        : target.value;
 
-    const checked =
-      event.target instanceof HTMLInputElement
-        ? event.target.checked
-        : false;
-
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: type === "checkbox" ? checked : value,
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
     }));
 
-    setErrors((previousErrors) => ({
-      ...previousErrors,
-      [name]: "",
+    setErrors((previous) => ({
+      ...previous,
+      [name]: undefined,
     }));
+
+    setSuccess(false);
+    setSendError("");
   }
 
   function validate() {
-    const newErrors: FormErrors = {};
+    const nextErrors: FormErrors = {};
 
     if (formData.name.trim().length < 2) {
-      newErrors.name = "Bitte geben Sie Ihren Namen ein.";
+      nextErrors.name = "Bitte geben Sie Ihren Namen ein.";
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      nextErrors.email = "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
     }
 
-    if (formData.phone && !/^[0-9+\s()-]{6,}$/.test(formData.phone)) {
-      newErrors.phone = "Bitte geben Sie eine gültige Telefonnummer ein.";
+    if (
+      formData.phone.trim() &&
+      !/^[0-9+\s()-]{6,100}$/.test(formData.phone.trim())
+    ) {
+      nextErrors.phone = "Bitte geben Sie eine gültige Telefonnummer ein.";
     }
 
     if (formData.message.trim().length < 10) {
-      newErrors.message =
+      nextErrors.message =
         "Die Nachricht sollte mindestens 10 Zeichen haben.";
     }
 
     if (!formData.privacy) {
-      newErrors.privacy =
-        "Bitte akzeptieren Sie die Datenschutzerklärung.";
+      nextErrors.privacy = "Bitte akzeptieren Sie die Datenschutzerklärung.";
     }
 
-    setErrors(newErrors);
+    setErrors(nextErrors);
 
-    return Object.keys(newErrors).length === 0;
+    return nextErrors;
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setSuccess(false);
+    if (isSending) return;
 
-    if (!validate()) return;
+    setSuccess(false);
+    setSendError("");
+
+    const validationErrors = validate();
+    const firstError = Object.keys(validationErrors)[0];
+
+    if (firstError) {
+      const element = event.currentTarget.elements.namedItem(firstError);
+
+      if (element instanceof HTMLElement) {
+        element.focus();
+      }
+
+      return;
+    }
+
+    setIsSending(true);
 
     try {
-      setIsSending(true);
-
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          name: formData.name.trim(),
+          company: formData.company.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          message: formData.message.trim(),
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error("Fehler beim Senden");
+      const result = await response.json();
+
+      if (!response.ok || result.ok !== true) {
+        throw new Error(
+          result.message || "Fehler beim Senden. Bitte versuchen Sie es später erneut.",
+        );
       }
 
+      setFormData(initialData);
+      setErrors({});
       setSuccess(true);
-
-      setFormData({
-        name: "",
-        company: "",
-        email: "",
-        phone: "",
-        message: "",
-        privacy: false,
-      });
     } catch (error) {
-      console.error(error);
-
-      alert(
-        "Fehler beim Senden. Bitte versuchen Sie es später erneut.",
+      setSendError(
+        error instanceof Error
+          ? error.message
+          : "Fehler beim Senden. Bitte versuchen Sie es später erneut.",
       );
     } finally {
       setIsSending(false);
@@ -131,185 +186,159 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="relative isolate">
+    <div className="relative isolate w-full min-w-0 max-w-full">
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mt-12 max-w-xl lg:mt-0"
+        noValidate
+        aria-busy={isSending}
+        className="mx-auto mt-12 w-full min-w-0 max-w-xl lg:mt-0"
       >
-        <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-          {/* Name */}
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-white"
-            >
-              Name *
-            </label>
+        <fieldset
+          disabled={isSending}
+          className="m-0 min-w-0 border-0 p-0"
+        >
+          <legend className="sr-only">Kontaktformular</legend>
 
-            <input
-              id="name"
-              name="name"
-              type="text"
-              autoComplete="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={fieldClassName}
-            />
+          <div className="grid min-w-0 grid-cols-1 gap-6">
+            {fields.map((field) => (
+              <div key={field.name} className="min-w-0">
+                <label
+                  htmlFor={`contact-${field.name}`}
+                  className="block text-sm font-medium text-white"
+                >
+                  {field.label}
+                </label>
 
-            {errors.name && (
-              <p className="mt-2 text-sm text-red-300">
-                {errors.name}
-              </p>
-            )}
-          </div>
+                <input
+                  id={`contact-${field.name}`}
+                  name={field.name}
+                  type={field.type}
+                  autoComplete={field.autoComplete}
+                  required={field.required}
+                  maxLength={field.maxLength}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  placeholder={
+                    field.name === "phone" ? "+43 664 391 93 74" : undefined
+                  }
+                  aria-invalid={Boolean(errors[field.name])}
+                  aria-describedby={
+                    errors[field.name]
+                      ? `contact-${field.name}-error`
+                      : undefined
+                  }
+                  className={fieldClassName}
+                />
 
-          {/* Unternehmen */}
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="company"
-              className="block text-sm font-medium text-white"
-            >
-              Unternehmen
-            </label>
+                {errors[field.name] && (
+                  <p
+                    id={`contact-${field.name}-error`}
+                    className="mt-2 break-words text-sm text-red-200"
+                  >
+                    {errors[field.name]}
+                  </p>
+                )}
+              </div>
+            ))}
 
-            <input
-              id="company"
-              name="company"
-              type="text"
-              autoComplete="organization"
-              value={formData.company}
-              onChange={handleChange}
-              className={fieldClassName}
-            />
-          </div>
+            <div className="min-w-0">
+              <label
+                htmlFor="contact-message"
+                className="block text-sm font-medium text-white"
+              >
+                Nachricht *
+              </label>
 
-          {/* E-Mail */}
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-white"
-            >
-              E-Mail *
-            </label>
-
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={fieldClassName}
-            />
-
-            {errors.email && (
-              <p className="mt-2 text-sm text-red-300">
-                {errors.email}
-              </p>
-            )}
-          </div>
-
-          {/* Telefon */}
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="phone"
-              className="block text-sm font-medium text-white"
-            >
-              Telefon
-            </label>
-
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              autoComplete="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+43 664 391 93 74"
-              className={fieldClassName}
-            />
-
-            {errors.phone && (
-              <p className="mt-2 text-sm text-red-300">
-                {errors.phone}
-              </p>
-            )}
-          </div>
-
-          {/* Nachricht */}
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="message"
-              className="block text-sm font-medium text-white"
-            >
-              Nachricht *
-            </label>
-
-            <textarea
-              id="message"
-              name="message"
-              rows={5}
-              value={formData.message}
-              onChange={handleChange}
-              className={fieldClassName}
-            />
-
-            {errors.message && (
-              <p className="mt-2 text-sm text-red-300">
-                {errors.message}
-              </p>
-            )}
-          </div>
-
-          {/* Datenschutz */}
-          <div className="sm:col-span-2">
-            <div className="flex gap-x-4">
-              <input
-                id="privacy"
-                name="privacy"
-                type="checkbox"
-                checked={formData.privacy}
+              <textarea
+                id="contact-message"
+                name="message"
+                rows={5}
+                required
+                maxLength={10000}
+                value={formData.message}
                 onChange={handleChange}
-                className="mt-1 size-4 shrink-0 accent-black"
+                aria-invalid={Boolean(errors.message)}
+                aria-describedby={
+                  errors.message ? "contact-message-error" : undefined
+                }
+                className={`${fieldClassName} resize-y`}
               />
 
-              <label
-                htmlFor="privacy"
-                className="text-sm/6 text-white/75"
-              >
-                Ich willige in die Verarbeitung meiner Daten gemäß der{" "}
-                <a
-                  href="/datenschutz"
-                  className="font-semibold text-white underline decoration-white/40 underline-offset-4 transition hover:text-white/70"
+              {errors.message && (
+                <p
+                  id="contact-message-error"
+                  className="mt-2 break-words text-sm text-red-200"
                 >
-                  Datenschutzerklärung
-                </a>{" "}
-                ein.
-              </label>
+                  {errors.message}
+                </p>
+              )}
             </div>
 
-            {errors.privacy && (
-              <p className="mt-2 text-sm text-red-300">
-                {errors.privacy}
-              </p>
-            )}
-          </div>
-        </div>
+            <div className="min-w-0">
+              <div className="flex items-start gap-3">
+                <input
+                  id="contact-privacy"
+                  name="privacy"
+                  type="checkbox"
+                  required
+                  checked={formData.privacy}
+                  onChange={handleChange}
+                  aria-invalid={Boolean(errors.privacy)}
+                  aria-describedby={
+                    errors.privacy ? "contact-privacy-error" : undefined
+                  }
+                  className="mt-1 size-4 shrink-0 accent-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                />
 
-        {/* Кнопка */}
-        <div className="mt-10">
+                <label
+                  htmlFor="contact-privacy"
+                  className="min-w-0 flex-1 text-sm/6 text-white [overflow-wrap:anywhere]"
+                >
+                  Ich willige in die Verarbeitung meiner Daten gemäß der{" "}
+                  <a
+                    href="/datenschutz"
+                    className="rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  >
+                    Datenschutzerklärung
+                  </a>{" "}
+                  ein.
+                </label>
+              </div>
+
+              {errors.privacy && (
+                <p
+                  id="contact-privacy-error"
+                  className="mt-2 break-words text-sm text-red-200"
+                >
+                  {errors.privacy}
+                </p>
+              )}
+            </div>
+          </div>
+
           <button
             type="submit"
             disabled={isSending}
-            className="w-full rounded-md bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-colors duration-300 ease-out hover:bg-white hover:text-[#165201] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-10 w-full rounded-md bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-white hover:text-[#165201] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSending ? "Wird gesendet..." : "Absenden"}
           </button>
+        </fieldset>
+
+        <div role="status" aria-live="polite">
+          {success && (
+            <p className="mt-6 break-words text-center text-sm/6 font-medium text-white">
+              Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.
+            </p>
+          )}
         </div>
 
-        {success && (
-          <p className="mt-6 text-center text-sm/6 font-medium text-white">
-            Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.
+        {sendError && (
+          <p
+            role="alert"
+            className="mt-6 break-words text-center text-sm/6 text-red-200"
+          >
+            {sendError}
           </p>
         )}
       </form>

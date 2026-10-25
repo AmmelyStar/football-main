@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+const email = "tormannschuleweinviertel@hotmail.com";
+
 const navigation = [
   { name: "Camp Anmeldung", href: "/camp-anmeldung" },
   { name: "Datenschutz", href: "/datenschutz" },
@@ -24,7 +26,7 @@ export default function Footer() {
               Tormann & Bewegungsschule Weinviertel
             </Link>
 
-            <p className="mt-4 max-w-md text-sm/6 text-white">
+            <p className="mt-4 max-w-md text-sm/6">
               Professionelles Tormanntraining, Bewegung und individuelle
               Förderung im Weinviertel.
             </p>
@@ -38,7 +40,7 @@ export default function Footer() {
           </div>
 
           {/* Контакты */}
-          <div className="min-w-0 space-y-3 text-sm/6 text-white">
+          <div className="min-w-0 space-y-3 text-sm/6">
             <p className="font-semibold">Kontakt</p>
 
             <p>
@@ -47,15 +49,16 @@ export default function Footer() {
               Österreich
             </p>
 
-            <p>
-              <span className="font-medium">E-Mail:</span>{" "}
+            <div className="min-w-0">
+              <p className="font-medium">E-Mail:</p>
+
               <a
-                href="mailto:tormannschuleweinviertel@hotmail.com"
-                className={`${linkClassName} break-all`}
+                href={`mailto:${email}`}
+                className={`${linkClassName} mt-1 inline-block whitespace-nowrap text-[11px]/6 min-[375px]:text-xs sm:text-sm`}
               >
-                tormannschuleweinviertel@hotmail.com
+                {email}
               </a>
-            </p>
+            </div>
 
             <p>
               <span className="font-medium">Telefon:</span>{" "}
@@ -71,7 +74,7 @@ export default function Footer() {
 
         {/* Нижняя часть */}
         <div className="mt-10 flex flex-col gap-4 border-t border-black/60 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm/6 text-white">
+          <p className="text-sm/6">
             © 2026 Tormann & Bewegungsschule Weinviertel
           </p>
 

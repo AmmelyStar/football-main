@@ -9,136 +9,168 @@ export default function Hero() {
   const handsRef = useRef<HTMLDivElement>(null);
   const ballRef = useRef<HTMLDivElement>(null);
 
-  const ballRotation = useRef(0);
-  const caught = useRef(false);
-
-  const getHeroVar = (name: string, fallback: number) => {
-    if (!sectionRef.current) return fallback;
-
-    const value = getComputedStyle(sectionRef.current)
-      .getPropertyValue(name)
-      .trim();
-
-    return value ? Number.parseFloat(value) : fallback;
-  };
-
   useEffect(() => {
-    const ball = ballRef.current;
+    const section = sectionRef.current;
+    const background = bgRef.current;
     const hands = handsRef.current;
+    const ball = ballRef.current;
 
-    if (!ball || !hands) return;
+    if (!section || !background || !hands || !ball) return;
 
-    const handsFinalY = getHeroVar("--hero-hands-y", 90);
-    const ballFinalY = getHeroVar("--hero-ball-y", -70);
-    const handsScale = getHeroVar("--hero-hands-scale", 1);
-    const ballScale = getHeroVar("--hero-ball-scale", 0.8);
-
-    ball.style.transition = "none";
-    hands.style.transition = "none";
-
-    ball.style.opacity = "0";
-    ball.style.transform = `
-      translateX(-50%)
-      translateY(-400px)
-      scale(0.3)
-      rotate(-150deg)
-    `;
-
-    hands.style.opacity = "0";
-    hands.style.transform = "translateY(220px) scale(0.7)";
-    hands.style.transformOrigin = "bottom center";
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        ball.style.transition =
-          "transform 0.95s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.25s ease";
-
-        ball.style.opacity = "1";
-        ball.style.transform = `
-          translateX(-50%)
-          translateY(${ballFinalY}px)
-          scale(${ballScale})
-          rotate(0deg)
-        `;
-
-        hands.style.transition =
-          "transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.35s ease";
-
-        hands.style.opacity = "1";
-        hands.style.transform = `
-          translateY(${handsFinalY}px)
-          scale(${handsScale})
-        `;
-      });
-    });
-
-    const timer = window.setTimeout(() => {
-      caught.current = true;
-    }, 1200);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, []);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
+    const motionPreference = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
-    ).matches;
+    );
 
-    if (prefersReducedMotion) return;
+    let animationFrame: number | null = null;
+    let introFrame: number | null = null;
+    let introTimer: number | null = null;
+    let introComplete = false;
 
-    let rafId: number | null = null;
-
-    const handleScroll = () => {
-      if (!caught.current) return;
-
-      if (rafId !== null) {
-        cancelAnimationFrame(rafId);
-      }
-
-      rafId = requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-
-        const handsFinalY = getHeroVar("--hero-hands-y", 90);
-        const ballFinalY = getHeroVar("--hero-ball-y", -70);
-        const handsScale = getHeroVar("--hero-hands-scale", 1);
-        const ballScale = getHeroVar("--hero-ball-scale", 0.8);
-
-        if (bgRef.current) {
-          bgRef.current.style.transform = `translateY(${scrollY * 0.25}px)`;
-        }
-
-        if (handsRef.current) {
-          handsRef.current.style.transform = `
-            translateY(${handsFinalY + scrollY * 0.1}px)
-            scale(${handsScale})
-          `;
-        }
-
-        if (ballRef.current) {
-          ballRotation.current = scrollY * 0.4;
-
-          ballRef.current.style.transform = `
-            translateX(-50%)
-            translateY(${ballFinalY - scrollY * 0.05}px)
-            scale(${ballScale})
-            rotate(${ballRotation.current}deg)
-          `;
-        }
-      });
+    let settings = {
+      handsY: 90,
+      ballY: -70,
+      handsScale: 1,
+      ballScale: 0.8,
     };
 
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
+    function readSettings() {
+      const styles = getComputedStyle(section!);
+
+      const getValue = (name: string, fallback: number) => {
+        const value = Number.parseFloat(styles.getPropertyValue(name));
+        return Number.isFinite(value) ? value : fallback;
+      };
+
+      settings = {
+        handsY: getValue("--hero-hands-y", 90),
+        ballY: getValue("--hero-ball-y", -70),
+        handsScale: getValue("--hero-hands-scale", 1),
+        ballScale: getValue("--hero-ball-scale", 0.8),
+      };
+    }
+
+    function updatePosition() {
+      if (!background || !hands || !ball || !section) return;
+
+      const scroll = motionPreference.matches
+        ? 0
+        : Math.min(
+            Math.max(window.scrollY - section.offsetTop, 0),
+            section.offsetHeight,
+          );
+
+      background.style.transform = `translateY(${scroll * 0.25}px)`;
+
+      hands.style.transform = `
+        translateY(${settings.handsY + scroll * 0.1}px)
+        scale(${settings.handsScale})
+      `;
+
+      ball.style.transform = `
+        translateX(-50%)
+        translateY(${settings.ballY - scroll * 0.05}px)
+        scale(${settings.ballScale})
+        rotate(${scroll * 0.4}deg)
+      `;
+    }
+
+    function stopIntro() {
+      if (introFrame !== null) {
+        cancelAnimationFrame(introFrame);
+        introFrame = null;
+      }
+
+      if (introTimer !== null) {
+        window.clearTimeout(introTimer);
+        introTimer = null;
+      }
+    }
+
+    function finishIntro() {
+      if (!ball || !hands) return;
+
+      stopIntro();
+
+      introComplete = true;
+      ball.style.transition = "none";
+      hands.style.transition = "none";
+      updatePosition();
+    }
+
+    function handleScroll() {
+      if (!introComplete || motionPreference.matches) return;
+      if (animationFrame !== null) return;
+
+      animationFrame = requestAnimationFrame(() => {
+        animationFrame = null;
+        updatePosition();
+      });
+    }
+
+    function handleResize() {
+      readSettings();
+
+      if (introComplete) {
+        updatePosition();
+      }
+    }
+
+    function handleMotionChange() {
+      finishIntro();
+    }
+
+    readSettings();
+
+    if (motionPreference.matches || window.scrollY > 0) {
+      finishIntro();
+    } else {
+      /*
+       * Элементы остаются видимыми:
+       * вступление анимирует только transform.
+       */
+      ball.style.transition = "none";
+      hands.style.transition = "none";
+
+      ball.style.transform = `
+        translateX(-50%)
+        translateY(-400px)
+        scale(0.3)
+        rotate(-150deg)
+      `;
+
+      hands.style.transform = "translateY(220px) scale(0.7)";
+
+      introFrame = requestAnimationFrame(() => {
+        introFrame = requestAnimationFrame(() => {
+          introFrame = null;
+
+          ball.style.transition =
+            "transform 0.95s cubic-bezier(0.22, 0.61, 0.36, 1)";
+
+          hands.style.transition =
+            "transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1)";
+
+          updatePosition();
+
+          introTimer = window.setTimeout(finishIntro, 1150);
+        });
+      });
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
+    motionPreference.addEventListener("change", handleMotionChange);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      stopIntro();
 
-      if (rafId !== null) {
-        cancelAnimationFrame(rafId);
+      if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
       }
+
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      motionPreference.removeEventListener("change", handleMotionChange);
     };
   }, []);
 
@@ -150,10 +182,10 @@ export default function Hero() {
         className="hero-section relative mx-auto h-screen min-h-150 max-h-225 w-full max-w-7xl overflow-hidden"
         style={{ clipPath: "inset(0)" }}
       >
-        {/* Фоновая фотография */}
+        {/* Фон */}
         <div
           ref={bgRef}
-          className="absolute z-0 will-change-transform"
+          className="hero-background absolute z-0"
           style={{ inset: "-15% 0" }}
         >
           <Image
@@ -161,31 +193,32 @@ export default function Hero() {
             alt=""
             fill
             priority
-            sizes="100vw"
+            sizes="(max-width: 1280px) 100vw, 1280px"
             className="object-cover object-center"
           />
 
-          <div className="absolute inset-0 bg-black/40" />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-black/40"
+          />
         </div>
 
         {/* Мяч */}
         <div
           ref={ballRef}
-          className="absolute top-50 z-[2] will-change-transform"
+          className="hero-ball absolute top-50 z-[2]"
           style={{
-            bottom: "5%",
             left: "50%",
             width: "var(--hero-ball-size)",
             aspectRatio: "1",
-            opacity: 0,
           }}
         >
           <Image
             src="/hero/ball.png"
-            alt="Football"
+            alt="Fußball"
             fill
             priority
-            sizes="(max-width: 480px) 72vw, 530px"
+            sizes="(max-width: 380px) 51vw, (max-width: 480px) 54vw, (max-width: 963px) 44vw, 424px"
             className="object-contain"
             style={{
               filter: "drop-shadow(0 12px 32px rgba(0, 0, 0, 0.6))",
@@ -196,24 +229,21 @@ export default function Hero() {
         {/* Руки */}
         <div
           ref={handsRef}
-          className="absolute inset-0 z-[3] mx-2 will-change-transform"
-          style={{
-            opacity: 0,
-            transformOrigin: "bottom center",
-          }}
+          className="hero-hands absolute inset-0 z-[3] mx-2"
         >
           <Image
             src="/hero/hands.png"
             alt=""
             fill
             priority
-            sizes="100vw"
+            sizes="(max-width: 1280px) 100vw, 1280px"
             className="object-cover object-bottom"
           />
         </div>
 
-        {/* Зелёная растушёвка по краям */}
+        {/* Растушёвка по краям */}
         <div
+          aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-[4]"
           style={{
             background: `
@@ -230,30 +260,37 @@ export default function Hero() {
             `,
           }}
         />
-        {/* Нижняя растушёвка между Hero и About */}
-<div
-  className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-40 sm:h-56"
-  style={{
-    background: `
-      linear-gradient(
-        to bottom,
-        rgba(22, 82, 1, 0) 0%,
-        rgba(22, 82, 1, 0.75) 65%,
-        #165201 100%
-      )
-    `,
-  }}
-/>
+
+        {/* Нижняя растушёвка */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-40 sm:h-56"
+          style={{
+            background: `
+              linear-gradient(
+                to bottom,
+                rgba(22, 82, 1, 0) 0%,
+                rgba(22, 82, 1, 0.75) 65%,
+                #165201 100%
+              )
+            `,
+          }}
+        />
 
         {/* Текст */}
         <div className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
           <svg
             viewBox="0 0 800 300"
+            role="img"
+            aria-label="In Form fürs Leben"
             className="-mt-10 w-full max-w-3xl"
             style={{ overflow: "visible" }}
           >
             <defs>
-              <path id="arc" d="M 50,250 Q 400,0 750,250" />
+              <path
+                id="hero-slogan-arc"
+                d="M 50,250 Q 400,0 750,250"
+              />
             </defs>
 
             <text
@@ -266,11 +303,11 @@ export default function Hero() {
               }}
             >
               <textPath
-                href="#arc"
+                href="#hero-slogan-arc"
                 startOffset="50%"
                 textAnchor="middle"
               >
-                In Form für&apos;s Leben
+                In Form fürs Leben
               </textPath>
             </text>
           </svg>
@@ -278,13 +315,13 @@ export default function Hero() {
           <div className="pointer-events-auto mt-16">
             <a
               href="#kontakt"
-              className="rounded-md bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-colors duration-300 hover:bg-white hover:text-[#165201]"
+              className="inline-flex rounded-md bg-black px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-colors duration-300 hover:bg-white hover:text-[#165201] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
               Jetzt mitmachen
             </a>
           </div>
 
-          <p className="mt-20 max-w-xl text-base leading-relaxed text-white/90 drop-shadow sm:mt-40">
+          <p className="mt-20 max-w-xl text-base leading-relaxed text-white drop-shadow sm:mt-40">
             Jeder einzelne muss persönliche Hürden überwinden. Wie schnell wir
             ins Ziel kommen, spielt dabei keine große Rolle. Wichtig ist nur,
             jeden Tag alles zu geben. Stellst du dich der Herausforderung?
@@ -298,6 +335,26 @@ export default function Hero() {
             --hero-ball-scale: 0.8;
             --hero-hands-y: 90;
             --hero-hands-scale: 1;
+          }
+
+          .hero-ball {
+            transform: translateX(-50%)
+              translateY(calc(var(--hero-ball-y) * 1px))
+              scale(var(--hero-ball-scale));
+          }
+
+          .hero-hands {
+            transform: translateY(calc(var(--hero-hands-y) * 1px))
+              scale(var(--hero-hands-scale));
+            transform-origin: bottom center;
+          }
+
+          @media (prefers-reduced-motion: no-preference) {
+            .hero-background,
+            .hero-ball,
+            .hero-hands {
+              will-change: transform;
+            }
           }
 
           @media (max-width: 480px) {
