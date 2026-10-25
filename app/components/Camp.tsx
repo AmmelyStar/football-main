@@ -38,7 +38,7 @@ export default function Camp() {
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
             <p
-              className="text-4xl font-medium text-white/70"
+              className="text-4xl font-medium text-white"
               style={{ fontFamily: "'Indie Flower', cursive" }}
             >
               Unsere Camps 2026
@@ -50,7 +50,7 @@ export default function Camp() {
               Dein nächster Schritt.
             </h2>
 
-            <p className="mt-6 max-w-lg text-base/8 font-light text-white/85">
+            <p className="mt-6 max-w-lg text-base/8 font-light text-white">
               Trainiere mit der{" "}
               <span className="bg-black px-1 font-semibold text-white">
                 UNION Tormannschule Weinviertel
@@ -69,7 +69,10 @@ export default function Camp() {
               className="object-cover"
             />
 
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"
+            />
           </div>
         </div>
 
@@ -81,7 +84,7 @@ export default function Camp() {
               className="flex min-w-0 flex-col rounded-xl bg-black p-6 sm:p-8"
             >
               <div className="flex min-h-7 flex-wrap items-center justify-between gap-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">
                   {camp.label}
                 </p>
 
@@ -96,41 +99,38 @@ export default function Camp() {
                 {camp.title}
               </h3>
 
+              {/* Каждая группа содержит непосредственно dt и dd */}
               <dl className="mt-7 space-y-4">
-                <div className="flex items-center gap-3">
-                  <CalendarDaysIcon
-                    aria-hidden="true"
-                    className="size-5 shrink-0 text-white/60"
-                  />
+                <div className="relative pl-8">
+                  <dt className="sr-only">Termin</dt>
 
-                  <div>
-                    <dt className="sr-only">Termin</dt>
-                    <dd className="text-sm font-medium leading-6 text-white sm:text-base">
-                      {camp.date}
-                    </dd>
-                  </div>
+                  <dd className="text-sm font-medium leading-6 text-white sm:text-base">
+                    <CalendarDaysIcon
+                      aria-hidden="true"
+                      className="absolute left-0 top-0.5 size-5 text-white/80"
+                    />
+                    {camp.date}
+                  </dd>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <MapPinIcon
-                    aria-hidden="true"
-                    className="size-5 shrink-0 text-white/60"
-                  />
+                <div className="relative pl-8">
+                  <dt className="sr-only">Ort</dt>
 
-                  <div>
-                    <dt className="sr-only">Ort</dt>
-                    <dd className="text-sm leading-6 text-white/80 sm:text-base">
-                      {camp.location}
-                    </dd>
-                  </div>
+                  <dd className="text-sm leading-6 text-white/90 sm:text-base">
+                    <MapPinIcon
+                      aria-hidden="true"
+                      className="absolute left-0 top-0.5 size-5 text-white/80"
+                    />
+                    {camp.location}
+                  </dd>
                 </div>
               </dl>
 
-              {/* Цены и кнопки выровнены между карточками */}
+              {/* Цены и кнопки */}
               <div className="mt-auto pt-8">
                 <div className="grid grid-cols-2 gap-4 border-t border-white/15 pt-6">
                   <div>
-                    <p className="text-xs font-medium text-white/60 sm:text-sm">
+                    <p className="text-xs font-medium text-white/80 sm:text-sm">
                       Frühbucherpreis
                     </p>
 
@@ -138,13 +138,13 @@ export default function Camp() {
                       € {camp.earlyPrice}
                     </p>
 
-                    <p className="mt-3 max-w-40 text-xs/5 text-white/60">
+                    <p className="mt-3 max-w-40 text-xs/5 text-white/80">
                       Bei Anmeldung bis {camp.earlyDeadline}
                     </p>
                   </div>
 
                   <div className="border-l border-white/15 pl-4">
-                    <p className="text-xs font-medium text-white/60 sm:text-sm">
+                    <p className="text-xs font-medium text-white/80 sm:text-sm">
                       Normalpreis
                     </p>
 
@@ -152,7 +152,7 @@ export default function Camp() {
                       € {camp.regularPrice}
                     </p>
 
-                    <p className="mt-3 text-xs/5 text-white/60">
+                    <p className="mt-3 text-xs/5 text-white/80">
                       Bei Anmeldung danach
                     </p>
                   </div>
@@ -160,9 +160,13 @@ export default function Camp() {
 
                 <Link
                   href="/camp-anmeldung"
-                  className="mt-8 block rounded-md bg-white px-5 py-3.5 text-center text-sm font-semibold text-black transition-colors duration-300 hover:bg-[#165201] hover:text-white"
+                  className="mt-8 block rounded-md bg-white px-5 py-3.5 text-center text-sm font-semibold text-black transition-colors duration-300 hover:bg-[#165201] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 >
                   Jetzt anmelden
+                  <span className="sr-only">
+                    {" "}
+                    – {camp.title} in {camp.location}
+                  </span>
                 </Link>
               </div>
             </article>
@@ -176,7 +180,7 @@ export default function Camp() {
               Anmeldung & Kontakt
             </h3>
 
-            <p className="mt-1 text-sm text-white/70">
+            <p className="mt-1 text-sm text-white">
               Fragen zu den Camps? Melde dich bei uns.
             </p>
           </div>
@@ -184,14 +188,14 @@ export default function Camp() {
           <div className="flex min-w-0 flex-col gap-3 text-sm sm:flex-row sm:flex-wrap sm:gap-x-8">
             <a
               href="mailto:tormannschuleweinviertel@hotmail.com"
-              className="break-all font-medium text-white underline decoration-white/40 underline-offset-4 transition-opacity hover:opacity-70"
+              className="rounded-sm break-all font-medium text-white underline decoration-white/60 underline-offset-4 hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
               tormannschuleweinviertel@hotmail.com
             </a>
 
             <a
               href="tel:+436643919374"
-              className="whitespace-nowrap font-medium text-white underline decoration-white/40 underline-offset-4 transition-opacity hover:opacity-70"
+              className="whitespace-nowrap rounded-sm font-medium text-white underline decoration-white/60 underline-offset-4 hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
               0664 391 93 74
             </a>

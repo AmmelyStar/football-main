@@ -7,36 +7,39 @@ const navigation = [
   { name: "AGB", href: "/agb" },
 ];
 
+const linkClassName =
+  "rounded-sm text-white underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white";
+
 export default function Footer() {
   return (
-    <footer className="bg-[#165201]">
+    <footer className="bg-[#165201] text-white">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="flex flex-col gap-10 border-t border-black/60 pt-10 md:flex-row md:items-start md:justify-between">
           {/* Информация */}
-          <div>
+          <div className="min-w-0">
             <Link
               href="/"
-              className="text-lg font-semibold text-white transition hover:text-white/75"
+              className={`${linkClassName} text-lg font-semibold`}
             >
               Tormann & Bewegungsschule Weinviertel
             </Link>
 
-            <p className="mt-4 max-w-md text-sm/6 text-white/65">
+            <p className="mt-4 max-w-md text-sm/6 text-white">
               Professionelles Tormanntraining, Bewegung und individuelle
               Förderung im Weinviertel.
             </p>
 
             <Link
               href="/camp-anmeldung"
-              className="mt-6 inline-flex rounded-full bg-black px-6 py-3 text-sm font-bold text-white shadow-lg transition-colors duration-300 hover:bg-white hover:text-[#165201]"
+              className="mt-6 inline-flex rounded-full bg-black px-6 py-3 text-sm font-bold text-white shadow-lg transition-colors duration-300 hover:bg-white hover:text-[#165201] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
               Jetzt zum Camp anmelden
             </Link>
           </div>
 
           {/* Контакты */}
-          <div className="space-y-3 text-sm/6 text-white/65">
-            <p className="font-semibold text-white">Kontakt</p>
+          <div className="min-w-0 space-y-3 text-sm/6 text-white">
+            <p className="font-semibold">Kontakt</p>
 
             <p>
               Union Tormann- und Bewegungsschule Weinviertel
@@ -45,20 +48,20 @@ export default function Footer() {
             </p>
 
             <p>
-              <span className="font-medium text-white">E-Mail:</span>{" "}
+              <span className="font-medium">E-Mail:</span>{" "}
               <a
-                href="mailto:franz.machaczek@hotmail.com"
-                className="transition hover:text-white"
+                href="mailto:tormannschuleweinviertel@hotmail.com"
+                className={`${linkClassName} break-all`}
               >
-                franz.machaczek@hotmail.com
+                tormannschuleweinviertel@hotmail.com
               </a>
             </p>
 
             <p>
-              <span className="font-medium text-white">Telefon:</span>{" "}
+              <span className="font-medium">Telefon:</span>{" "}
               <a
                 href="tel:+436643919374"
-                className="transition hover:text-white"
+                className={`${linkClassName} inline-block`}
               >
                 +43 664 391 93 74
               </a>
@@ -68,32 +71,41 @@ export default function Footer() {
 
         {/* Нижняя часть */}
         <div className="mt-10 flex flex-col gap-4 border-t border-black/60 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm/6 text-white/60">
+          <p className="text-sm/6 text-white">
             © 2026 Tormann & Bewegungsschule Weinviertel
           </p>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`text-sm/6 transition ${
-                  item.name === "Camp Anmeldung"
-                    ? "font-semibold text-white hover:text-white/70"
-                    : "text-white/60 hover:text-white"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            <nav
+              aria-label="Weitere Links"
+              className="flex flex-wrap items-center gap-x-6 gap-y-2"
+            >
+              {navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`${linkClassName} py-2 text-sm/6 ${
+                    item.href === "/camp-anmeldung"
+                      ? "font-semibold"
+                      : ""
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
 
             <a
               href="https://coming-soon-beige-beta.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm/6 text-white/60 transition hover:text-white"
+              className={`${linkClassName} py-2 text-sm/6`}
             >
               Erstellt von <span className="font-bold">DVI</span>
+              <span className="sr-only">
+                {" "}
+                (öffnet in einem neuen Tab)
+              </span>
             </a>
           </div>
         </div>
