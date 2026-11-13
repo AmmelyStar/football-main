@@ -115,12 +115,13 @@ export default function WhyUs() {
       <div className="w-full bg-black">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-10 px-6 py-8 lg:flex-row lg:gap-16 lg:px-8 lg:py-0">
           <Image
-            src="/team.webp"
-            alt="Tormanntraining"
-            width={600}
-            height={388}
-            className="h-auto w-full max-w-md shrink-0 rounded-lg object-contain lg:-my-10 lg:max-w-lg"
-          />
+  src="/team-green.jpg"
+  alt="Teilnehmer und Trainer der Tormannschule Weinviertel vor dem Fußballtor"
+  width={1280}
+  height={830}
+  sizes="(max-width: 1023px) 100vw, 512px"
+  className="h-auto w-full max-w-md shrink-0 rounded-lg lg:-my-10 lg:max-w-lg"
+/>
 
           <p
             className="mx-auto max-w-lg px-6 pb-4 text-balance text-center text-4xl font-medium text-white lg:mx-0 lg:text-left"

@@ -53,7 +53,7 @@ export default function Yoga() {
           Yoga & Bewegung
         </p>
 
-        <h2 className="mx-auto mt-6 max-w-2xl text-balance text-center font-display text-3xl/12 font-semibold tracking-wider text-white md:text-5xl/20">
+        <h2 className="mx-auto mt-6 max-w-2xl text-balance text-center font-display text-2xl font-semibold leading-relaxed tracking-wide text-white [overflow-wrap:anywhere] sm:text-3xl md:text-5xl md:leading-relaxed">
           Bewegungsschule Weinviertel
         </h2>
 
@@ -62,61 +62,59 @@ export default function Yoga() {
           Mobilität, Stabilität, Regeneration und Körpergefühl.
         </p>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+        <div className="mt-12 grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-8">
           {/* Левая колонка */}
-          <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 gap-6 lg:grid-rows-2 lg:gap-8">
+          <div className="flex min-w-0 flex-col gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 gap-6 lg:gap-8">
               {yogaClasses.map((item) => (
-                <div
+                <article
                   key={item.title}
-                  className="group relative min-h-85 overflow-hidden rounded-lg border border-white/10 bg-black p-6 transition duration-300 hover:border-white/30 lg:min-h-0"
+                  className="min-w-0 rounded-lg border border-white/10 bg-black p-5 transition-colors duration-300 hover:border-white/30 sm:p-6"
                 >
-                  <div className="relative z-10 flex h-full flex-col justify-between">
-                    <div className="flex w-full flex-row justify-between gap-6">
-                      <p
-                        className="text-2xl font-medium text-white/75"
-                        style={{ fontFamily: "'Indie Flower', cursive" }}
-                      >
-                        {item.day}
+                  <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+                    <p
+                      className="shrink-0 text-2xl font-medium text-white/75"
+                      style={{ fontFamily: "'Indie Flower', cursive" }}
+                    >
+                      {item.day}
+                    </p>
+
+                    <div className="min-w-0 space-y-2 text-sm text-white/75 sm:max-w-52 sm:text-right">
+                      <p>{item.location}</p>
+
+                      <p className="flex items-center gap-2 sm:justify-end">
+                        <ClockIcon
+                          aria-hidden="true"
+                          className="size-5 shrink-0"
+                        />
+                        <span>{item.time}</span>
                       </p>
-
-                      <div className="w-50 space-y-2 text-right text-sm text-white/70">
-                        <p>{item.location}</p>
-
-                        <p className="flex items-center justify-end gap-2">
-                          <ClockIcon
-                            aria-hidden="true"
-                            className="size-5 shrink-0 text-white/70"
-                          />
-
-                          <span>{item.time}</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="mt-4 max-w-md text-balance font-display text-2xl/8 font-semibold uppercase tracking-wider text-white">
-                        {item.title}
-                      </h3>
-
-                      <ul className="mt-3 space-y-1 text-sm/6 font-light text-white/80">
-                        {item.points.map((point) => (
-                          <li key={point}>— {point}</li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="mt-5 flex flex-col gap-3 text-sm font-medium sm:flex-row">
-                      <span className="w-full bg-white px-4 py-2 text-center text-black">
-                        {item.price}
-                      </span>
-
-                      <span className="w-full border border-white/25 px-4 py-2 text-center text-white sm:w-50">
-                        {item.blockPrice}
-                      </span>
                     </div>
                   </div>
-                </div>
+
+                  <h3 className="mt-6 font-display text-xl font-semibold uppercase leading-relaxed tracking-wide text-white [overflow-wrap:anywhere] sm:text-2xl">
+                    {item.title}
+                  </h3>
+
+                  <ul className="mt-3 space-y-2 text-sm/6 font-light text-white/80">
+                    {item.points.map((point) => (
+                      <li key={point} className="flex gap-2">
+                        <span aria-hidden="true">—</span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-6 grid grid-cols-1 gap-3 text-sm font-medium sm:grid-cols-2">
+                    <p className="bg-white px-4 py-3 text-center text-black">
+                      {item.price}
+                    </p>
+
+                    <p className="border border-white/25 px-4 py-3 text-center text-white">
+                      {item.blockPrice}
+                    </p>
+                  </div>
+                </article>
               ))}
             </div>
 
@@ -125,13 +123,13 @@ export default function Yoga() {
               {yogaInfo.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-lg border border-white/10 bg-black p-6 transition duration-300 hover:border-white/30"
+                  className="min-w-0 rounded-lg border border-white/10 bg-black p-5 transition-colors duration-300 hover:border-white/30 sm:p-6"
                 >
-                  <h4 className="font-display text-xl/7 font-semibold uppercase tracking-wider text-white">
+                  <h3 className="font-display text-lg font-semibold uppercase leading-relaxed tracking-wide text-white [overflow-wrap:anywhere]">
                     {item.title}
-                  </h4>
+                  </h3>
 
-                  <p className="mt-3 text-sm/6 font-light text-white/70">
+                  <p className="mt-3 text-sm/6 font-light text-white/75">
                     {item.text}
                   </p>
                 </div>
@@ -139,47 +137,44 @@ export default function Yoga() {
             </div>
           </div>
 
-          {/* Правая колонка */}
-          <div className="grid grid-cols-1 overflow-hidden rounded-lg ring-1 ring-white/10">
-            <div className="group relative min-h-130 overflow-hidden lg:min-h-135">
+          {/* Фотография и информация об Iris */}
+          <div className="min-w-0 overflow-hidden rounded-lg bg-black ring-1 ring-white/10">
+            <div className="relative aspect-[3/4]">
               <Image
-                src="/girl2.png"
-                alt="Yoga und Bewegung"
-                width={900}
-                height={1100}
-                className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
+                src="/yoga-iris.png"
+                alt="Iris Schneider bei einer Yogaübung am Strand"
+                fill
+                sizes="(max-width: 1023px) 100vw, 600px"
+                className="object-contain"
               />
             </div>
 
-            <div className="bg-black p-8 text-white">
-              <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
-                <div>
-                  <h3
-                    className="text-2xl font-medium text-white/70"
-                    style={{ fontFamily: "'Indie Flower', cursive" }}
-                  >
-                    Mehr Informationen
-                  </h3>
+            <div className="p-5 text-white sm:p-8">
+              <p
+                className="text-2xl font-medium text-white/70"
+                style={{ fontFamily: "'Indie Flower', cursive" }}
+              >
+                Mehr Informationen
+              </p>
 
-                  <p className="mt-4 font-display text-4xl/12 font-semibold uppercase tracking-wider text-white">
-                    Iris Schneider
-                  </p>
+              <h3 className="mt-4 font-display text-2xl font-semibold uppercase leading-relaxed tracking-wide text-white [overflow-wrap:anywhere] sm:text-3xl">
+                Iris Schneider
+              </h3>
 
-                  <p className="mt-3 max-w-md text-base/7 font-light text-white/70">
-                    Weitere Details zu den Yoga- und Bewegungseinheiten finden
-                    Sie direkt auf der Website.
-                  </p>
-                </div>
+              <p className="mt-3 max-w-md text-base/7 font-light text-white/75">
+                Weitere Details zu den Yoga- und Bewegungseinheiten finden
+                Sie direkt auf der Website.
+              </p>
 
-                <Link
-                  href="https://www.iris-schneider.at/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 border border-white bg-white px-6 py-5 text-lg font-semibold text-[#165201] transition duration-300 hover:bg-transparent hover:text-white"
-                >
-                  Website öffnen
-                </Link>
-              </div>
+              <Link
+                href="https://www.iris-schneider.at/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex w-full items-center justify-center border border-white bg-white px-6 py-4 text-base font-semibold text-[#165201] transition-colors duration-300 hover:bg-transparent hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              >
+                Website öffnen
+                <span className="sr-only"> (öffnet in einem neuen Tab)</span>
+              </Link>
             </div>
           </div>
         </div>
