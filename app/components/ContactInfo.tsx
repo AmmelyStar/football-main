@@ -22,7 +22,7 @@ const contactItems = [
   },
   {
     title: "Adresse",
-    text: "Adresse folgt, ÖsterreichBachgasse 361/2, 2181 Dobermannsdorf",
+    text: "Österreich, Bachgasse 361/2, 2181 Dobermannsdorf",
     href: null,
     icon: MapPinIcon,
   },
