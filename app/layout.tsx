@@ -27,7 +27,7 @@ const description =
   "Professionelles Tormanntraining für Kinder, Jugendliche und Erwachsene im Weinviertel. Individuelles Training und Tormanncamps – in Form fürs Leben.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://football-main.vercel.app"),
+  metadataBase: new URL("https://www.union-tormannschule.at"),
 
   title: {
     default: title,
