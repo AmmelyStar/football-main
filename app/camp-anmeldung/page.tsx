@@ -1,9 +1,20 @@
 import RegistrationForm from "../components/RegistrationForm";
 import Link from "next/link";
 
-export default function CampAnmeldungPage() {
+type PageProps = {
+  searchParams: Promise<{
+    camp?: string | string[];
+  }>;
+};
+
+export default async function CampAnmeldungPage({
+  searchParams,
+}: PageProps) {
+  const params = await searchParams;
+  const campId = typeof params.camp === "string" ? params.camp : "";
+
   return (
-    <main className=" bg-black">
+    <main className="bg-black">
       <div className="mx-auto max-w-6xl px-6 pt-8">
         <Link
           href="/"
@@ -13,7 +24,7 @@ export default function CampAnmeldungPage() {
         </Link>
       </div>
 
-      <RegistrationForm />
+      <RegistrationForm key={campId} initialCampId={campId} />
     </main>
   );
 }

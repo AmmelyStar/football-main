@@ -4,44 +4,11 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-
-const camps = [
-  {
-    id: "hallencamp",
-    label: "Wintercamp",
-    title: "Hallen-Trainingscamp",
-    date: "28. – 30. Dezember 2026",
-    location: "Poysbrunn",
-    earlyPrice: "149",
-    earlyDeadline: "15. November 2026",
-    regularPrice: "179",
-    limited: true,
-  },
-  {
-    id: "asparn",
-    label: "Frühjahrscamp",
-    title: "Tormann-Trainingscamp",
-    date: "20. & 21. März 2027",
-    location: "Asparn",
-    earlyPrice: "125",
-    earlyDeadline: "15. Februar 2027",
-    regularPrice: "149",
-    limited: false,
-  },
-  {
-    id: "hohenau",
-    label: "Sommercamp",
-    title: "Tormann-Trainingscamp",
-    date: "3. & 4. Juli 2027",
-    location: "Hohenau",
-    earlyPrice: "125",
-    earlyDeadline: "1. Juni 2027",
-    regularPrice: "149",
-    limited: false,
-  },
-];
+import { getOpenCamps } from "../data/camps";
 
 export default function Camp() {
+  const camps = getOpenCamps();
+
   return (
     <section id="camp" className="bg-[#165201]">
       <div className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-8">
@@ -52,7 +19,7 @@ export default function Camp() {
               className="text-4xl font-medium text-white"
               style={{ fontFamily: "'Indie Flower', cursive" }}
             >
-              Unsere Camps 2026 & 2027
+              Unsere aktuellen Camps
             </p>
 
             <h2 className="mt-5 font-display text-3xl font-semibold uppercase leading-tight tracking-wide text-white sm:text-5xl">
@@ -66,8 +33,8 @@ export default function Camp() {
               <span className="bg-black px-1 font-semibold text-white">
                 UNION Tormannschule Weinviertel
               </span>
-              : beim Hallen-Trainingscamp in Poysbrunn oder bei unseren
-              Tormann-Trainingscamps in Asparn und Hohenau.
+              . Entdecke unsere aktuellen Trainingscamps und finde den
+              passenden Termin für deinen nächsten Schritt im Tor.
             </p>
           </div>
 
@@ -87,101 +54,108 @@ export default function Camp() {
           </div>
         </div>
 
-        {/* Три лагеря */}
-        <div className="mt-12 grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:mt-16 xl:grid-cols-3">
-          {camps.map((camp) => (
-            <article
-              key={camp.id}
-              className="flex min-w-0 flex-col rounded-xl bg-black p-5 sm:p-6"
-            >
-              <div className="flex min-h-8 flex-wrap items-center justify-between gap-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/80">
-                  {camp.label}
-                </p>
+        {/* Актуальные лагеря из общего списка */}
+        {camps.length > 0 ? (
+          <div className="mt-12 grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:mt-16 xl:grid-cols-3">
+            {camps.map((camp) => (
+              <article
+                key={camp.id}
+                className="flex min-w-0 flex-col rounded-xl bg-black p-5 sm:p-6"
+              >
+                <div className="flex min-h-8 flex-wrap items-center justify-between gap-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/80">
+                    {camp.label}
+                  </p>
 
-                {camp.limited && (
-                  <span className="rounded-full border border-white/25 px-3 py-1 text-xs font-medium text-white">
-                    Limitierte Plätze
-                  </span>
-                )}
-              </div>
-
-              <h3 className="mt-5 font-display text-xl font-semibold leading-relaxed text-white [overflow-wrap:anywhere] sm:text-2xl">
-                {camp.title}
-              </h3>
-
-              <dl className="mt-7 space-y-4">
-                <div className="relative pl-8">
-                  <dt className="sr-only">Termin</dt>
-
-                  <dd className="text-sm font-medium leading-6 text-white">
-                    <CalendarDaysIcon
-                      aria-hidden="true"
-                      className="absolute left-0 top-0.5 size-5 text-white/80"
-                    />
-                    {camp.date}
-                  </dd>
+                  {camp.limited && (
+                    <span className="rounded-full border border-white/25 px-3 py-1 text-xs font-medium text-white">
+                      Limitierte Plätze
+                    </span>
+                  )}
                 </div>
 
-                <div className="relative pl-8">
-                  <dt className="sr-only">Ort</dt>
+                <h3 className="mt-5 font-display text-xl font-semibold leading-relaxed text-white [overflow-wrap:anywhere] sm:text-2xl">
+                  {camp.title}
+                </h3>
 
-                  <dd className="text-sm leading-6 text-white/90">
-                    <MapPinIcon
-                      aria-hidden="true"
-                      className="absolute left-0 top-0.5 size-5 text-white/80"
-                    />
-                    {camp.location}
-                  </dd>
-                </div>
-              </dl>
+                <dl className="mt-7 space-y-4">
+                  <div className="relative pl-8">
+                    <dt className="sr-only">Termin</dt>
 
-              {/* Цены и кнопки выровнены по низу */}
-              <div className="mt-auto pt-8">
-                <div className="grid grid-cols-2 gap-3 border-t border-white/15 pt-6">
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium text-white/80">
-                      Frühbucherpreis
-                    </p>
-
-                    <p className="mt-3 whitespace-nowrap font-display text-3xl font-semibold text-white">
-                      € {camp.earlyPrice}
-                    </p>
-
-                    <p className="mt-3 text-xs/5 text-white/80">
-                      Bei Anmeldung bis {camp.earlyDeadline}
-                    </p>
+                    <dd className="text-sm font-medium leading-6 text-white">
+                      <CalendarDaysIcon
+                        aria-hidden="true"
+                        className="absolute left-0 top-0.5 size-5 text-white/80"
+                      />
+                      {camp.date}
+                    </dd>
                   </div>
 
-                  <div className="min-w-0 border-l border-white/15 pl-3">
-                    <p className="text-xs font-medium text-white/80">
-                      Normalpreis
-                    </p>
+                  <div className="relative pl-8">
+                    <dt className="sr-only">Ort</dt>
 
-                    <p className="mt-3 whitespace-nowrap font-display text-3xl font-semibold text-white">
-                      € {camp.regularPrice}
-                    </p>
-
-                    <p className="mt-3 text-xs/5 text-white/80">
-                      Bei Anmeldung danach
-                    </p>
+                    <dd className="text-sm leading-6 text-white/90">
+                      <MapPinIcon
+                        aria-hidden="true"
+                        className="absolute left-0 top-0.5 size-5 text-white/80"
+                      />
+                      {camp.location}
+                    </dd>
                   </div>
-                </div>
+                </dl>
 
-                <Link
-                  href="/camp-anmeldung"
-                  className="mt-8 block rounded-md bg-white px-5 py-3.5 text-center text-sm font-semibold text-black transition-colors duration-300 hover:bg-[#165201] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                >
-                  Jetzt anmelden
-                  <span className="sr-only">
-                    {" "}
-                    – {camp.title} in {camp.location}
-                  </span>
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
+                {/* Цены и кнопки выровнены по низу */}
+                <div className="mt-auto pt-8">
+                  <div className="grid grid-cols-2 gap-3 border-t border-white/15 pt-6">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-white/80">
+                        Frühbucherpreis
+                      </p>
+
+                      <p className="mt-3 whitespace-nowrap font-display text-3xl font-semibold text-white">
+                        € {camp.earlyPrice}
+                      </p>
+
+                      <p className="mt-3 text-xs/5 text-white/80">
+                        Bei Anmeldung bis {camp.earlyDeadline}
+                      </p>
+                    </div>
+
+                    <div className="min-w-0 border-l border-white/15 pl-3">
+                      <p className="text-xs font-medium text-white/80">
+                        Normalpreis
+                      </p>
+
+                      <p className="mt-3 whitespace-nowrap font-display text-3xl font-semibold text-white">
+                        € {camp.regularPrice}
+                      </p>
+
+                      <p className="mt-3 text-xs/5 text-white/80">
+                        Bei Anmeldung danach
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link
+                    href={`/camp-anmeldung?camp=${encodeURIComponent(camp.id)}`}
+                    className="mt-8 block rounded-md bg-white px-5 py-3.5 text-center text-sm font-semibold text-black transition-colors duration-300 hover:bg-[#165201] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  >
+                    Jetzt anmelden
+                    <span className="sr-only">
+                      {" "}
+                      – {camp.title} in {camp.location}, {camp.date}
+                    </span>
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-12 rounded-xl bg-black p-6 text-center text-base/8 text-white">
+            Derzeit sind keine Camps zur Anmeldung verfügbar. Neue Termine
+            werden hier bekannt gegeben.
+          </p>
+        )}
 
         {/* Контакты */}
         <div className="mt-10 flex flex-col gap-5 border-b border-t border-black/60 py-7 lg:flex-row lg:items-center lg:justify-between">

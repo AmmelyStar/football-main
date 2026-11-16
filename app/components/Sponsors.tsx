@@ -2,14 +2,19 @@ import Image from "next/image";
 
 const sponsors = [
   {
-    name: "Raiffeisenbank",
+    name: "Raiffeisenbank im Weinviertel",
     logo: "/sponsor/s1.png",
+    href: "https://www.raiffeisen.at/noew/im-weinviertel/de/privatkunden.html",
   },
   {
     name: "Erste Bank",
     logo: "/sponsor/s2.png",
+    href: "https://www.sparkasse.at/erstebank/privatkunden",
   },
 ];
+
+const logoLinkStyle =
+  "relative block h-24 min-w-0 rounded-md opacity-90 transition duration-300 ease-out hover:scale-105 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#afd63f]";
 
 export default function Sponsors() {
   return (
@@ -64,22 +69,37 @@ export default function Sponsors() {
           <div className="relative z-10 grid h-full grid-cols-1 items-center gap-6 px-8 py-8 sm:grid-cols-[1fr_0.65fr_1fr] sm:gap-4 sm:px-12 sm:py-6">
             {/* Партнёры слева */}
             <div className="grid grid-cols-2 items-center gap-5">
-              <div className="relative h-24 min-w-0 opacity-90 transition duration-300 ease-out hover:scale-105 hover:opacity-100">
+              <a
+                href="https://sportunion.at/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={logoLinkStyle}
+              >
                 <Image
                   src="/sponsor/p1.png"
-                  alt="Sport Union — Partner"
+                  alt="SPORTUNION"
                   fill
                   sizes="(max-width: 639px) 35vw, 160px"
                   className="object-contain"
                 />
-              </div>
 
-              <div className="relative h-24 min-w-0 opacity-90 transition duration-300 ease-out hover:scale-105 hover:opacity-100">
-                {/* Знак на одной высоте со Sport Union */}
+                <span className="sr-only">
+                  {" "}
+                  – Website in einem neuen Tab öffnen
+                </span>
+              </a>
+
+              <a
+                href="https://www.keepersport.at/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={logoLinkStyle}
+              >
+                {/* Логотип на одной высоте со SPORTUNION */}
                 <div className="absolute inset-x-0 top-[10px] flex justify-center">
                   <Image
                     src="/sponsor/ks.png"
-                    alt="KS"
+                    alt="KEEPERsport"
                     width={140}
                     height={32}
                     sizes="140px"
@@ -87,12 +107,18 @@ export default function Sponsors() {
                   />
                 </div>
 
-                {/* Подпись поднята к логотипу */}
-                <span className="absolute inset-x-0 top-[41px] text-center font-sans text-[8px] font-normal leading-none text-white/80">
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 top-[41px] text-center font-sans text-[8px] font-normal leading-none text-white/80"
+                >
                   Partner
                 </span>
 
-                {/* Более широкая и заметная тень */}
+                <span className="sr-only">
+                  {" "}
+                  – Website in einem neuen Tab öffnen
+                </span>
+
                 <div
                   aria-hidden="true"
                   className="pointer-events-none absolute bottom-[14px] left-1/2 h-[10px] w-[90%] -translate-x-1/2 rounded-[100%]"
@@ -102,18 +128,24 @@ export default function Sponsors() {
                     filter: "blur(2px)",
                   }}
                 />
-              </div>
+              </a>
             </div>
 
             {/* Свободный центр над мячом */}
-            <div aria-hidden="true" className="hidden sm:block" />
+            <div
+              aria-hidden="true"
+              className="hidden sm:block"
+            />
 
             {/* Спонсоры справа */}
             <div className="grid grid-cols-2 items-center gap-5">
               {sponsors.map((sponsor) => (
-                <div
+                <a
                   key={sponsor.logo}
-                  className="relative h-24 min-w-0 opacity-90 transition duration-300 ease-out hover:scale-105 hover:opacity-100"
+                  href={sponsor.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={logoLinkStyle}
                 >
                   <Image
                     src={sponsor.logo}
@@ -122,7 +154,12 @@ export default function Sponsors() {
                     sizes="(max-width: 639px) 35vw, 160px"
                     className="object-contain"
                   />
-                </div>
+
+                  <span className="sr-only">
+                    {" "}
+                    – Website in einem neuen Tab öffnen
+                  </span>
+                </a>
               ))}
             </div>
           </div>
