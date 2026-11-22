@@ -578,7 +578,7 @@ export async function POST(request: Request) {
       to: MAIL_TO,
 
       // Тестовая скрытая копия для Anna.
-      bcc: "ammelymm@gmail.com",
+      // bcc: "ammelymm@gmail.com",
 
       replyTo: parentEmail,
 
